@@ -21,7 +21,7 @@ namespace topit {
 template< class T>
 bool topit::Vector< T >::isEmpty() const noexcept
 {
-  return false;
+  return !size_;
 }
 topit::Vector< T>::Vector():
   data_(nullptr),
