@@ -1,9 +1,9 @@
 CXXFLAGS += -Wall -Wextra -std=c++14 -Weffc++ -MMD
 
--include main.d
-
-top-vect: main.cpp
+top-vect: main.o
 	g++ -o $@ $^
 
+-include main.d
+
 clean:
-	rm -rf *.d *.o top-vect
+	rm -rf *.o *.d top-vect

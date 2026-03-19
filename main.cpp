@@ -1,31 +1,35 @@
-#include <iostream>
-#include <iomanip>
 #include "top-it-vector.hpp"
+#include <iostream>
 
 bool testDefaultVector()
 {
-  Vector< int > v;
+  topit::Vector< int > v;
   return v.isEmpty();
 }
 
-bool testVectorWithValue() {
+bool testVectorWithValue()
+{
   topit::Vector< int > v;
   v.pushBack(1);
   return !v.isEmpty();
 }
+
 int main()
 {
-//  std::cout << "Default: " << testDefaultVector() << "\n";
-  using test_t = bool(*)();
-  using pair_t = std::pair< const char*, test_t>;
-  pait_t tests[] = {
-    {"Default", testDefaultVector}
-    {"Vector", testVectorWithValue}
-  };
+  using test_t = bool (*)();
+  using pair_t = std::pair< const char*, test_t >;
+  pair_t tests[] = {{"Default vector should be empty", testDefaultVector},
+                    {"Vector with any value is not empty", testVectorWithValue}};
   const size_t count = sizeof(tests) / sizeof(pair_t);
-//Только для статических массивов
-  for (size_t i=0; i < count; ++i){
+  std::cout << std::boolalpha;
+  bool pass = true;
+  for (size_t i = 0; i < count; ++i)
+  {
     bool res = tests[i].second();
-    std::cout << tests[i].first << ": \n" << res << "\n";
+    std::cout << res << ": ";
+    std::cout << tests[i].first << '\n';
+    pass = pass && res;
   }
+  std::cout << pass;
+  std::cout << ": RESULT\n";
 }
