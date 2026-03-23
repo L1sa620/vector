@@ -31,17 +31,6 @@ namespace topit
 }
 
 template< class T >
-void topit::Vector< T >::pushFront(const T& val)
-{
-  Vector< T > copy(getSize() + 1);
-  copy[0] = val;
-  for (size_t i = 0; i < copy.getSize(); i++) {
-    copy[i] = (*this)[i - 1];
-  }
-  swap(copy);
-}
-
-template< class T >
 void topit::Vector< T >::swap(Vector< T >& rhs) noexcept
 {
   std::swap(rhs.data_, data_);
@@ -128,4 +117,17 @@ void topit::Vector< T >::pushBack(const T& val)
   copy[getSize()] = val;
   swap(copy);
 }
+
+template< class T >
+void topit::Vector< T >::pushFront(const T& val)
+{
+  Vector< T > copy(getSize() + 1);
+  copy[0] = val;
+  for (size_t i = 0; i < getSize(); i++)
+  {
+    copy[i + 1] = (*this)[i];
+  }
+  swap(copy);
+}
+
 #endif

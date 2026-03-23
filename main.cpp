@@ -41,6 +41,14 @@ bool testEmptyCapacity()
   return v.getCapacity() == 0;
 }
 
+bool testPushFront()
+{
+  topit::Vector< int > v;
+  v.pushBack(2);
+  v.pushFront(1);
+  return v.getSize() == 2 && v[0] == 1 && v[1] == 2;
+}
+
 int main()
 {
   using test_t = bool (*)();
@@ -51,7 +59,8 @@ int main()
     {"Vector with any value is not empty", testVectorWithValue},
     {"Sizes must be equal as elements", testCopyConstructor},
     {"Inbound access elements", testElementAccess},
-    {"Empty vector capacity is zero", testEmptyCapacity}
+    {"Empty vector capacity is zero", testEmptyCapacity},
+    {"pushFront inserts element at beginning", testPushFront}
   };
   const size_t count = sizeof(tests) / sizeof(pair_t);
   std::cout << std::boolalpha;
