@@ -35,6 +35,11 @@ bool testElementAccess()
   return v[0] == 1 && v[1] == 2;
 }
 
+bool testEmptyCapacity()
+{
+  topit::Vector< int > v;
+  return v.getCapacity() == 0;
+}
 
 int main()
 {
@@ -45,8 +50,8 @@ int main()
     {"Default vector should be empty", testDefaultVector},
     {"Vector with any value is not empty", testVectorWithValue},
     {"Sizes must be equal as elements", testCopyConstructor},
-    {"Inbound access elements", testElementAccess}
-
+    {"Inbound access elements", testElementAccess},
+    {"Empty vector capacity is zero", testEmptyCapacity}
   };
   const size_t count = sizeof(tests) / sizeof(pair_t);
   std::cout << std::boolalpha;
