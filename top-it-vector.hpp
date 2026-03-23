@@ -93,12 +93,6 @@ topit::Vector< T >::Vector(const Vector< T >& rhs):
 }
 
 template< class T >
-void topit::Vector< T >::pushBack(const T&)
-{
-
-}
-
-template< class T >
 topit::Vector< T >::Vector():
   data_(nullptr),
   size_(0),
@@ -121,5 +115,17 @@ template< class T >
 size_t topit::Vector< T >::getCapacity() const noexcept
 {
   return capacity_;
+}
+
+template< class T >
+void topit::Vector< T >::pushBack(const T& val)
+{
+  Vector< T > copy(getSize() + 1);
+  for (size_t i = 0; i < getSize(); i++)
+  {
+    copy[i] = (*this)[i];
+  }
+  copy[getSize()] = val;
+  swap(copy);
 }
 #endif
