@@ -58,6 +58,23 @@ bool testPopBack()
   return v.getSize() == 1 && v[0] == 1;
 }
 
+bool testPushBack2()
+{
+  topit::Vector< int > v;
+  v.pushBack(1);
+  v.pushBack(2);
+  v.pushBack(3);
+  return v.getSize() == 3 && v[0] == 1 && v[1] == 2 && v[2] == 3;
+}
+
+bool testPopBack2()
+{
+  topit::Vector< int > v;
+  v.pushBack(5);
+  v.pop_back();
+  return v.getSize() == 0 && v.isEmpty();
+}
+
 int main()
 {
   using test_t = bool (*)();
@@ -70,7 +87,9 @@ int main()
     {"Inbound access elements", testElementAccess},
     {"Empty vector capacity is zero", testEmptyCapacity},
     {"pushFront inserts element at beginning", testPushFront},
-    {"pop_back removes last element", testPopBack}
+    {"pop_back removes last element", testPopBack},
+    {"multiple pushBack keeps correct order", testPushBack2},
+    {"pop_back works for single element", testPopBack2}
   };
   const size_t count = sizeof(tests) / sizeof(pair_t);
   std::cout << std::boolalpha;
