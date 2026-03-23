@@ -49,6 +49,15 @@ bool testPushFront()
   return v.getSize() == 2 && v[0] == 1 && v[1] == 2;
 }
 
+bool testPopBack()
+{
+  topit::Vector< int > v;
+  v.pushBack(1);
+  v.pushBack(2);
+  v.pop_back();
+  return v.getSize() == 1 && v[0] == 1;
+}
+
 int main()
 {
   using test_t = bool (*)();
@@ -60,7 +69,8 @@ int main()
     {"Sizes must be equal as elements", testCopyConstructor},
     {"Inbound access elements", testElementAccess},
     {"Empty vector capacity is zero", testEmptyCapacity},
-    {"pushFront inserts element at beginning", testPushFront}
+    {"pushFront inserts element at beginning", testPushFront},
+    {"pop_back removes last element", testPopBack}
   };
   const size_t count = sizeof(tests) / sizeof(pair_t);
   std::cout << std::boolalpha;

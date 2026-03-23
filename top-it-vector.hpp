@@ -130,4 +130,10 @@ void topit::Vector< T >::pushFront(const T& val)
   swap(copy);
 }
 
+template< class T >
+void topit::Vector< T >::pop_back()
+{
+  assert(size_ > 0);
+  size_--;
+}
 #endif
