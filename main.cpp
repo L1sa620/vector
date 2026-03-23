@@ -94,6 +94,43 @@ bool testCopyIndependence()
   return copy.getSize() == 2 && copy[0] == 1 && copy[1] == 2;
 }
 
+bool testOperator()
+{
+  topit::Vector< int > a;
+  a.pushBack(1);
+  a.pushBack(2);
+  topit::Vector< int > b;
+  b = a;
+  a.pushBack(3);
+  return b.getSize() == 2 && b[0] == 1 && b[1] == 2;
+}
+
+bool testIsEmpty()
+{
+  topit::Vector< int > v;
+  if (!v.isEmpty())
+  {
+    return false;
+  }
+  v.pushBack(1);
+  if (v.isEmpty())
+  {
+    return false;
+  }
+  v.pop_back();
+  return v.isEmpty();
+}
+
+bool testPushFrontPopBack()
+{
+  topit::Vector< int > v;
+  v.pushFront(1);
+  v.pushFront(2);
+  v.pop_back();
+  v.pop_back();
+  return v.getSize() == 0 && v.isEmpty();
+}
+
 int main()
 {
   using test_t = bool (*)();
@@ -110,7 +147,10 @@ int main()
     {"multiple pushBack keeps correct order", testPushBack2},
     {"pop_back works for single element", testPopBack2},
     {"multiple pushFront keeps correct order", testPushFront2},
-    {"copy constructor creates independent copy", testCopyIndependence}
+    {"copy constructor creates independent copy", testCopyIndependence},
+    {"assignment operator creates independent copy", testOperator},
+    {"isEmpty works for empty and non-empty vector", testIsEmpty},
+    {"pushFront and pop_back edge case", testPushFrontPopBack}
   };
   const size_t count = sizeof(tests) / sizeof(pair_t);
   std::cout << std::boolalpha;
