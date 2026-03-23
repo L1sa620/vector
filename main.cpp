@@ -75,6 +75,25 @@ bool testPopBack2()
   return v.getSize() == 0 && v.isEmpty();
 }
 
+bool testPushFront2()
+{
+  topit::Vector< int > v;
+  v.pushFront(3);
+  v.pushFront(2);
+  v.pushFront(1);
+  return v.getSize() == 3 && v[0] == 1 && v[1] == 2 && v[2] == 3;
+}
+
+bool testCopyIndependence()
+{
+  topit::Vector< int > v;
+  v.pushBack(1);
+  v.pushBack(2);
+  topit::Vector< int > copy = v;
+  v.pushBack(3);
+  return copy.getSize() == 2 && copy[0] == 1 && copy[1] == 2;
+}
+
 int main()
 {
   using test_t = bool (*)();
@@ -89,7 +108,9 @@ int main()
     {"pushFront inserts element at beginning", testPushFront},
     {"pop_back removes last element", testPopBack},
     {"multiple pushBack keeps correct order", testPushBack2},
-    {"pop_back works for single element", testPopBack2}
+    {"pop_back works for single element", testPopBack2},
+    {"multiple pushFront keeps correct order", testPushFront2},
+    {"copy constructor creates independent copy", testCopyIndependence}
   };
   const size_t count = sizeof(tests) / sizeof(pair_t);
   std::cout << std::boolalpha;
