@@ -130,6 +130,87 @@ bool testPushFrontPopBack()
   v.pop_back();
   return v.getSize() == 0 && v.isEmpty();
 }
+bool testElementConstAccess()
+{
+  topit::Vector< int > v;
+  v.pushBack(1);
+  v.pushBack(2);
+  const topit::Vector< int >& rv = v;
+  return rv[0] == 1 && rv[1] == 2;
+}
+
+bool testInitializerList()
+{
+  topit::Vector< int > v{1, 2, 3};
+  return v.getSize() == 3 && v[0] == 1 && v[1] == 2 && v[2] == 3;
+}
+
+bool testAtOutOfBound()
+{
+  topit::Vector< int > v;
+  try
+  {
+    v.at(0);
+    return false;
+  }
+  catch (const std::out_of_range&)
+  {
+    return true;
+  }
+  catch (...)
+  {
+    return false;
+  }
+}
+
+bool testAtInbound()
+{
+  topit::Vector< int > v;
+  v.pushBack(42);
+  try
+  {
+    int& val = v.at(0);
+    return val == 42;
+  }
+  catch (...)
+  {
+    return false;
+  }
+}
+
+bool testConstAtOutOfBound()
+{
+  const topit::Vector< int > v;
+  try
+  {
+    v.at(0);
+    return false;
+  }
+  catch (const std::out_of_range&)
+  {
+    return true;
+  }
+  catch (...)
+  {
+    return false;
+  }
+}
+
+bool testConstAtInbound()
+{
+  topit::Vector< int > v;
+  v.pushBack(42);
+  const topit::Vector< int >& rv = v;
+  try
+  {
+    const int& val = rv.at(0);
+    return val == 42;
+  }
+  catch (...)
+  {
+    return false;
+  }
+}
 
 int main()
 {
@@ -142,6 +223,7 @@ int main()
     {"Vector with any value is not empty", testVectorWithValue},
     {"Sizes must be equal as elements", testCopyConstructor},
     {"Inbound access elements", testElementAccess},
+    {"Const inbound access elements", testElementConstAccess},
     {"Empty vector capacity is zero", testEmptyCapacity},
     {"pushFront inserts element at beginning", testPushFront},
     {"pop_back removes last element", testPopBack},
@@ -152,6 +234,11 @@ int main()
     {"assignment operator creates independent copy", testAssignOperator},
     {"isEmpty works correctly", testIsEmpty},
     {"pushFront and pop_back edge case", testPushFrontPopBack},
+    {"initializer_list constructor", testInitializerList},
+    {"at() throws out_of_range", testAtOutOfBound},
+    {"at() returns correct value", testAtInbound},
+    {"const at() throws out_of_range", testConstAtOutOfBound},
+    {"const at() returns correct value", testConstAtInbound},
   };
 
   const size_t count = sizeof(tests) / sizeof(pair_t);

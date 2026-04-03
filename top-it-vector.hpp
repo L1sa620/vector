@@ -3,6 +3,8 @@
 
 #include <cassert>
 #include <cstddef>
+#include <initializer_list>
+#include <stdexcept>
 #include <utility>
 
 namespace topit
@@ -13,6 +15,7 @@ namespace topit
     Vector< T >();
     Vector< T >(const Vector< T >&);
     Vector< T >(Vector< T >&&) noexcept;
+    explicit Vector< T >(std::initializer_list< T > il);
     Vector< T >& operator=(const Vector< T >&);
     Vector< T >& operator=(Vector< T >&&) noexcept;
     ~Vector< T >();
@@ -25,6 +28,8 @@ namespace topit
     void pushBack(const T&);
     void pushFront(const T&);
     void pop_back();
+    T& at(size_t id);
+    const T& at(size_t id) const;
     void swap(Vector< T >& rhs) noexcept;
 
   private:
@@ -81,6 +86,16 @@ topit::Vector< T >& topit::Vector< T >::operator=(Vector< T >&& rhs) noexcept
   Vector< T > cpy(std::move(rhs));
   swap(cpy);
   return *this;
+}
+
+template< class T >
+topit::Vector< T >::Vector(std::initializer_list< T > il):
+  Vector(il.size())
+{
+  for (auto&& v: il)
+  {
+    pushBackImpl(v);
+  }
 }
 
 template< class T >
@@ -143,6 +158,23 @@ template< class T >
 bool topit::Vector< T >::isEmpty() const noexcept
 {
   return !size_;
+}
+
+template< class T >
+T& topit::Vector< T >::at(size_t id)
+{
+  const Vector< T > *cthis = this;
+  return const_cast< T& >(cthis->at(id));
+}
+
+template< class T >
+const T& topit::Vector< T >::at(size_t id) const
+{
+  if (id < size_)
+  {
+    return (*this)[id];
+  }
+  throw std::out_of_range("bad id");
 }
 
 template< class T >
