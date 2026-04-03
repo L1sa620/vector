@@ -1,5 +1,5 @@
-#include "top-it-vector.hpp"
 #include <iostream>
+#include "top-it-vector.hpp"
 
 bool testDefaultVector()
 {
@@ -94,7 +94,7 @@ bool testCopyIndependence()
   return copy.getSize() == 2 && copy[0] == 1 && copy[1] == 2;
 }
 
-bool testOperator()
+bool testAssignOperator()
 {
   topit::Vector< int > a;
   a.pushBack(1);
@@ -133,8 +133,9 @@ bool testPushFrontPopBack()
 
 int main()
 {
-  using test_t = bool (*)();
-  using pair_t = std::pair< const char*, test_t >;
+  using test_t = bool(*)();
+  using pair_t = std::pair< const char *, test_t >;
+
   pair_t tests[] =
   {
     {"Default vector should be empty", testDefaultVector},
@@ -148,10 +149,11 @@ int main()
     {"pop_back works for single element", testPopBack2},
     {"multiple pushFront keeps correct order", testPushFront2},
     {"copy constructor creates independent copy", testCopyIndependence},
-    {"assignment operator creates independent copy", testOperator},
-    {"isEmpty works for empty and non-empty vector", testIsEmpty},
-    {"pushFront and pop_back edge case", testPushFrontPopBack}
+    {"assignment operator creates independent copy", testAssignOperator},
+    {"isEmpty works correctly", testIsEmpty},
+    {"pushFront and pop_back edge case", testPushFrontPopBack},
   };
+
   const size_t count = sizeof(tests) / sizeof(pair_t);
   std::cout << std::boolalpha;
   bool pass = true;

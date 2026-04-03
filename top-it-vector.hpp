@@ -9,14 +9,14 @@ namespace topit
   struct Vector
   {
   private:
-    T* data_;
+    T *data_;
     size_t size_, capacity_;
 
     explicit Vector< T >(size_t k);
   public:
     Vector< T >();
     Vector< T >(const Vector< T >&);
-    Vector< T >& operator=(const Vector< T >& rhs);
+    Vector< T >& operator=(const Vector< T >&);
     ~Vector< T >();
     T& operator[](size_t id) noexcept;
     const T& operator[](size_t id) const noexcept;
@@ -24,18 +24,40 @@ namespace topit
     size_t getCapacity() const noexcept;
     bool isEmpty() const noexcept;
     void pushBack(const T&);
-    void pushFront(const T& val);
+    void pushFront(const T&);
     void pop_back();
     void swap(Vector< T >& rhs) noexcept;
   };
 }
 
 template< class T >
-void topit::Vector< T >::swap(Vector< T >& rhs) noexcept
+topit::Vector< T >::Vector(size_t k):
+  data_(new T[k]),
+  size_(k),
+  capacity_(k)
+{}
+
+template< class T >
+topit::Vector< T >::Vector():
+  data_(nullptr),
+  size_(0),
+  capacity_(0)
+{}
+
+template< class T >
+topit::Vector< T >::Vector(const Vector< T >& rhs):
+  topit::Vector< T >::Vector(rhs.getSize())
 {
-  std::swap(rhs.data_, data_);
-  std::swap(rhs.capacity_,capacity_);
-  std::swap(rhs.size_,size_);
+  for (size_t i = 0; i < getSize(); i++)
+  {
+    data_[i] = rhs[i];
+  }
+}
+
+template< class T >
+topit::Vector< T >::~Vector< T >()
+{
+  delete [] data_;
 }
 
 template< class T >
@@ -47,10 +69,11 @@ topit::Vector< T >& topit::Vector< T >::operator=(const Vector< T >& rhs)
 }
 
 template< class T >
-const T& topit::Vector< T >::operator[](size_t id) const noexcept
+void topit::Vector< T >::swap(Vector< T >& rhs) noexcept
 {
-  assert(id < getSize());
-  return data_[id];
+  std::swap(rhs.data_, data_);
+  std::swap(rhs.capacity_, capacity_);
+  std::swap(rhs.size_, size_);
 }
 
 template< class T >
@@ -61,49 +84,28 @@ T& topit::Vector< T >::operator[](size_t id) noexcept
 }
 
 template< class T >
+const T& topit::Vector< T >::operator[](size_t id) const noexcept
+{
+  assert(id < getSize());
+  return data_[id];
+}
+
+template< class T >
 size_t topit::Vector< T >::getSize() const noexcept
 {
   return size_;
-}
-template< class T >
-topit::Vector< T >::Vector(size_t k):
-  data_(new T[k]),
-  size_(k),
-  capacity_(k)
-{}
-
-template< class T >
-topit::Vector< T >::Vector(const Vector< T >& rhs):
-  topit::Vector< T >::Vector(rhs.getSize())
-{
-  for (size_t i = 0; i < getSize(); i++) {
-    data_[i] = rhs[i];
-  }
-}
-
-template< class T >
-topit::Vector< T >::Vector():
-  data_(nullptr),
-  size_(0),
-  capacity_(0)
-{}
-
-template< class T >
-topit::Vector< T >::~Vector<T>()
-{
-  delete [] data_;
-}
-
-template< class T >
-bool topit::Vector< T >::isEmpty() const noexcept
-{
-  return !size_;
 }
 
 template< class T >
 size_t topit::Vector< T >::getCapacity() const noexcept
 {
   return capacity_;
+}
+
+template< class T >
+bool topit::Vector< T >::isEmpty() const noexcept
+{
+  return !size_;
 }
 
 template< class T >
