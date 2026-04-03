@@ -211,6 +211,37 @@ bool testConstAtInbound()
     return false;
   }
 }
+bool testReserve()
+{
+  topit::Vector< int > v;
+  v.reserve(10);
+  return v.getCapacity() >= 10 && v.getSize() == 0;
+}
+
+bool testShrinkToFit()
+{
+  topit::Vector< int > v;
+  v.reserve(100);
+  v.pushBack(1);
+  v.pushBack(2);
+  v.shrinkToFit();
+  return v.getCapacity() == 2 && v.getSize() == 2 && v[0] == 1 && v[1] == 2;
+}
+
+bool testPushBackRange()
+{
+  int arr[] = {4, 5, 6};
+  topit::Vector< int > v{1, 2, 3};
+  v.pushBackRange(arr, 3);
+  return v.getSize() == 6 && v[3] == 4 && v[4] == 5 && v[5] == 6;
+}
+
+bool testPopFront()
+{
+  topit::Vector< int > v{1, 2, 3};
+  v.popFront();
+  return v.getSize() == 2 && v[0] == 2 && v[1] == 3;
+}
 
 int main()
 {
@@ -239,6 +270,10 @@ int main()
     {"at() returns correct value", testAtInbound},
     {"const at() throws out_of_range", testConstAtOutOfBound},
     {"const at() returns correct value", testConstAtInbound},
+    {"reserve increases capacity", testReserve},
+    {"shrinkToFit reduces capacity to size", testShrinkToFit},
+    {"pushBackRange appends elements", testPushBackRange},
+    {"popFront removes first element", testPopFront},
   };
 
   const size_t count = sizeof(tests) / sizeof(pair_t);

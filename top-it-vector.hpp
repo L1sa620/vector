@@ -27,7 +27,12 @@ namespace topit
     bool isEmpty() const noexcept;
     void pushBack(const T&);
     void pushFront(const T&);
+    void reserve(size_t cap);
+    void shrinkToFit();
+    template< class IT >
+    size_t pushBackRange(IT, size_t);
     void pop_back();
+    void popFront();
     T& at(size_t id);
     const T& at(size_t id) const;
     void swap(Vector< T >& rhs) noexcept;
@@ -161,6 +166,85 @@ bool topit::Vector< T >::isEmpty() const noexcept
 }
 
 template< class T >
+void topit::Vector< T >::reserve(size_t cap)
+{
+  if (capacity_ >= cap)
+  {
+    return;
+  }
+  T *d = static_cast< T * >(::operator new(sizeof(T) * cap));
+  size_t i = 0;
+  try
+  {
+    for (; i < size_; ++i)
+    {
+      new (d + i) T(std::move(data_[i]));
+    }
+  }
+  catch (...)
+  {
+    for (size_t j = 0; j < i; ++j)
+    {
+      (d + j)->~T();
+    }
+    ::operator delete(d);
+    throw;
+  }
+  for (size_t j = 0; j < size_; ++j)
+  {
+    data_[j].~T();
+  }
+  ::operator delete(data_);
+  data_ = d;
+  capacity_ = cap;
+}
+
+template< class T >
+void topit::Vector< T >::shrinkToFit()
+{
+  if (size_ == capacity_)
+  {
+    return;
+  }
+  if (size_ == 0)
+  {
+    ::operator delete(data_);
+    data_ = nullptr;
+    capacity_ = 0;
+    return;
+  }
+  Vector< T > tmp(size_);
+  for (size_t i = 0; i < size_; ++i)
+  {
+    tmp.pushBackImpl(data_[i]);
+  }
+  swap(tmp);
+}
+
+template< class T >
+template< class IT >
+size_t topit::Vector< T >::pushBackRange(IT it, size_t k)
+{
+  reserve(size_ + k);
+  for (size_t i = 0; i < k; ++i, ++it)
+  {
+    pushBackImpl(*it);
+  }
+  return k;
+}
+
+template< class T >
+void topit::Vector< T >::popFront()
+{
+  assert(size_ > 0);
+  for (size_t i = 0; i < size_ - 1; ++i)
+  {
+    data_[i] = std::move(data_[i + 1]);
+  }
+  data_[--size_].~T();
+}
+
+template< class T >
 T& topit::Vector< T >::at(size_t id)
 {
   const Vector< T > *cthis = this;
@@ -187,13 +271,11 @@ void topit::Vector< T >::pushBackImpl(const T& val)
 template< class T >
 void topit::Vector< T >::pushBack(const T& val)
 {
-  Vector< T > cpy(getSize() + 1);
-  for (size_t i = 0; i < getSize(); ++i)
+  if (size_ == capacity_)
   {
-    cpy.pushBackImpl(data_[i]);
+    reserve(capacity_ == 0 ? 1 : capacity_ * 2);
   }
-  cpy.pushBackImpl(val);
-  swap(cpy);
+  pushBackImpl(val);
 }
 
 template< class T >
