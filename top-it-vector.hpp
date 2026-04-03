@@ -5,6 +5,7 @@
 #include <cstddef>
 #include <initializer_list>
 #include <stdexcept>
+#include <iterator>
 #include <utility>
 
 namespace topit
@@ -12,6 +13,9 @@ namespace topit
   template< class T >
   struct Vector
   {
+    struct Iterator;
+    struct ConstIterator;
+
     Vector< T >();
     Vector< T >(const Vector< T >&);
     Vector< T >(Vector< T >&&) noexcept;
@@ -44,6 +48,87 @@ namespace topit
     explicit Vector< T >(size_t k);
     void pushBackImpl(const T&);
   };
+  template< class T >
+  struct Vector< T >::Iterator
+  {
+    using value_type = T;
+    using pointer = T *;
+    using reference = T&;
+    using difference_type = std::ptrdiff_t;
+    using iterator_category = std::random_access_iterator_tag;
+
+    explicit Iterator(T *ptr) noexcept:
+      ptr_(ptr)
+    {}
+
+    T *base() const noexcept { return ptr_; }
+    T& operator*() const noexcept { return *ptr_; }
+    T *operator->() const noexcept { return ptr_; }
+    T& operator[](difference_type n) const noexcept { return ptr_[n]; }
+
+    Iterator& operator++() noexcept { ++ptr_; return *this; }
+    Iterator operator++(int) noexcept { Iterator t(*this); ++(*this); return t; }
+    Iterator& operator--() noexcept { --ptr_; return *this; }
+    Iterator operator--(int) noexcept { Iterator t(*this); --(*this); return t; }
+    Iterator& operator+=(difference_type n) noexcept { ptr_ += n; return *this; }
+    Iterator& operator-=(difference_type n) noexcept { ptr_ -= n; return *this; }
+    Iterator operator+(difference_type n) const noexcept { return Iterator(ptr_ + n); }
+    Iterator operator-(difference_type n) const noexcept { return Iterator(ptr_ - n); }
+    difference_type operator-(const Iterator& r) const noexcept { return ptr_ - r.ptr_; }
+
+    bool operator==(const Iterator& r) const noexcept { return ptr_ == r.ptr_; }
+    bool operator!=(const Iterator& r) const noexcept { return ptr_ != r.ptr_; }
+    bool operator<(const Iterator& r) const noexcept { return ptr_ < r.ptr_; }
+    bool operator>(const Iterator& r) const noexcept { return ptr_ > r.ptr_; }
+    bool operator<=(const Iterator& r) const noexcept { return ptr_ <= r.ptr_; }
+    bool operator>=(const Iterator& r) const noexcept { return ptr_ >= r.ptr_; }
+
+  private:
+    T *ptr_;
+  };
+
+  template< class T >
+  struct Vector< T >::ConstIterator
+  {
+    using value_type = const T;
+    using pointer = const T *;
+    using reference = const T&;
+    using difference_type = std::ptrdiff_t;
+    using iterator_category = std::random_access_iterator_tag;
+
+    explicit ConstIterator(const T *ptr) noexcept:
+      ptr_(ptr)
+    {}
+
+    ConstIterator(const Iterator& it) noexcept:
+      ptr_(it.base())
+    {}
+
+    const T& operator*() const noexcept { return *ptr_; }
+    const T *operator->() const noexcept { return ptr_; }
+    const T& operator[](difference_type n) const noexcept { return ptr_[n]; }
+
+    ConstIterator& operator++() noexcept { ++ptr_; return *this; }
+    ConstIterator operator++(int) noexcept { ConstIterator t(*this); ++(*this); return t; }
+    ConstIterator& operator--() noexcept { --ptr_; return *this; }
+    ConstIterator operator--(int) noexcept { ConstIterator t(*this); --(*this); return t; }
+    ConstIterator& operator+=(difference_type n) noexcept { ptr_ += n; return *this; }
+    ConstIterator& operator-=(difference_type n) noexcept { ptr_ -= n; return *this; }
+    ConstIterator operator+(difference_type n) const noexcept { return ConstIterator(ptr_ + n); }
+    ConstIterator operator-(difference_type n) const noexcept { return ConstIterator(ptr_ - n); }
+    difference_type operator-(const ConstIterator& r) const noexcept { return ptr_ - r.ptr_; }
+
+    bool operator==(const ConstIterator& r) const noexcept { return ptr_ == r.ptr_; }
+    bool operator!=(const ConstIterator& r) const noexcept { return ptr_ != r.ptr_; }
+    bool operator<(const ConstIterator& r) const noexcept { return ptr_ < r.ptr_; }
+    bool operator>(const ConstIterator& r) const noexcept { return ptr_ > r.ptr_; }
+    bool operator<=(const ConstIterator& r) const noexcept { return ptr_ <= r.ptr_; }
+    bool operator>=(const ConstIterator& r) const noexcept { return ptr_ >= r.ptr_; }
+
+  private:
+    const T *ptr_;
+  };
+
 }
 
 template< class T >
