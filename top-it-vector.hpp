@@ -12,7 +12,9 @@ namespace topit
   {
     Vector< T >();
     Vector< T >(const Vector< T >&);
+    Vector< T >(Vector< T >&&) noexcept;
     Vector< T >& operator=(const Vector< T >&);
+    Vector< T >& operator=(Vector< T >&&) noexcept;
     ~Vector< T >();
 
     T& operator[](size_t id) noexcept;
@@ -56,6 +58,29 @@ topit::Vector< T >::Vector(const Vector< T >& rhs):
   {
     pushBackImpl(rhs[i]);
   }
+}
+
+template< class T >
+topit::Vector< T >::Vector(Vector< T >&& rhs) noexcept:
+  data_(rhs.data_),
+  size_(rhs.size_),
+  capacity_(rhs.capacity_)
+{
+  rhs.data_ = nullptr;
+  rhs.size_ = 0;
+  rhs.capacity_ = 0;
+}
+
+template< class T >
+topit::Vector< T >& topit::Vector< T >::operator=(Vector< T >&& rhs) noexcept
+{
+  if (this == std::addressof(rhs))
+  {
+    return *this;
+  }
+  Vector< T > cpy(std::move(rhs));
+  swap(cpy);
+  return *this;
 }
 
 template< class T >
