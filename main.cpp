@@ -242,6 +242,47 @@ bool testPopFront()
   v.popFront();
   return v.getSize() == 2 && v[0] == 2 && v[1] == 3;
 }
+bool testIteratorTraversal()
+{
+  topit::Vector< int > v{1, 2, 3};
+  int sum = 0;
+  for (auto it = v.begin(); it != v.end(); ++it)
+  {
+    sum += *it;
+  }
+  return sum == 6;
+}
+
+bool testIteratorArithmetic()
+{
+  topit::Vector< int > v{10, 20, 30};
+  auto it = v.begin();
+  it += 2;
+  bool ok = *it == 30;
+  ok = ok && *(it - 1) == 20;
+  ok = ok && it[0] == 30;
+  ok = ok && (v.end() - v.begin()) == 3;
+  return ok;
+}
+
+bool testConstIterator()
+{
+  topit::Vector< int > v{1, 2, 3};
+  const topit::Vector< int >& rv = v;
+  int sum = 0;
+  for (auto it = rv.cbegin(); it != rv.cend(); ++it)
+  {
+    sum += *it;
+  }
+  return sum == 6;
+}
+
+bool testIteratorConvertsToConst()
+{
+  topit::Vector< int > v{5, 6};
+  topit::Vector< int >::ConstIterator it = v.begin();
+  return *it == 5 && *(it + 1) == 6;
+}
 
 int main()
 {
@@ -274,6 +315,10 @@ int main()
     {"shrinkToFit reduces capacity to size", testShrinkToFit},
     {"pushBackRange appends elements", testPushBackRange},
     {"popFront removes first element", testPopFront},
+    {"iterator traversal sums correctly", testIteratorTraversal},
+    {"iterator arithmetic: +=, -, [], end-begin", testIteratorArithmetic},
+    {"ConstIterator traversal via cbegin/cend", testConstIterator},
+    {"Iterator converts to ConstIterator", testIteratorConvertsToConst},
   };
 
   const size_t count = sizeof(tests) / sizeof(pair_t);

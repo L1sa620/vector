@@ -37,6 +37,12 @@ namespace topit
     size_t pushBackRange(IT, size_t);
     void pop_back();
     void popFront();
+    Iterator begin() noexcept;
+    Iterator end() noexcept;
+    ConstIterator begin() const noexcept;
+    ConstIterator end() const noexcept;
+    ConstIterator cbegin() const noexcept;
+    ConstIterator cend() const noexcept;
     T& at(size_t id);
     const T& at(size_t id) const;
     void swap(Vector< T >& rhs) noexcept;
@@ -380,6 +386,42 @@ void topit::Vector< T >::pop_back()
 {
   assert(size_ > 0);
   data_[--size_].~T();
+}
+
+template< class T >
+typename topit::Vector< T >::Iterator topit::Vector< T >::begin() noexcept
+{
+  return Iterator(data_);
+}
+
+template< class T >
+typename topit::Vector< T >::Iterator topit::Vector< T >::end() noexcept
+{
+  return Iterator(data_ + size_);
+}
+
+template< class T >
+typename topit::Vector< T >::ConstIterator topit::Vector< T >::begin() const noexcept
+{
+  return ConstIterator(data_);
+}
+
+template< class T >
+typename topit::Vector< T >::ConstIterator topit::Vector< T >::end() const noexcept
+{
+  return ConstIterator(data_ + size_);
+}
+
+template< class T >
+typename topit::Vector< T >::ConstIterator topit::Vector< T >::cbegin() const noexcept
+{
+  return ConstIterator(data_);
+}
+
+template< class T >
+typename topit::Vector< T >::ConstIterator topit::Vector< T >::cend() const noexcept
+{
+  return ConstIterator(data_ + size_);
 }
 
 #endif
