@@ -283,6 +283,45 @@ bool testIteratorConvertsToConst()
   topit::Vector< int >::ConstIterator it = v.begin();
   return *it == 5 && *(it + 1) == 6;
 }
+bool testInsertAtIndex()
+{
+  topit::Vector< int > v{1, 3};
+  v.insert(1, 2);
+  return v.getSize() == 3 && v[0] == 1 && v[1] == 2 && v[2] == 3;
+}
+
+bool testEraseAtIndex()
+{
+  topit::Vector< int > v{1, 2, 3};
+  v.erase(1);
+  return v.getSize() == 2 && v[0] == 1 && v[1] == 3;
+}
+
+bool testInsertRangeFromVector()
+{
+  topit::Vector< int > a{1, 2, 3};
+  topit::Vector< int > b{10, 20};
+  a.insert(1, b, 0, 2);
+  return a.getSize() == 5 && a[0] == 1 && a[1] == 10 && a[2] == 20 && a[3] == 2 && a[4] == 3;
+}
+
+bool testEraseRange()
+{
+  topit::Vector< int > v{1, 2, 3, 4, 5};
+  v.erase(1, 4);
+  return v.getSize() == 2 && v[0] == 1 && v[1] == 5;
+}
+
+bool testPushFrontPopFront()
+{
+  topit::Vector< int > v;
+  v.pushFront(2);
+  v.pushFront(1);
+  bool ok = v.getSize() == 2 && v[0] == 1 && v[1] == 2;
+  v.popFront();
+  ok = ok && v.getSize() == 1 && v[0] == 2;
+  return ok;
+}
 
 int main()
 {
@@ -319,6 +358,11 @@ int main()
     {"iterator arithmetic: +=, -, [], end-begin", testIteratorArithmetic},
     {"ConstIterator traversal via cbegin/cend", testConstIterator},
     {"Iterator converts to ConstIterator", testIteratorConvertsToConst},
+    {"insert at index shifts elements right", testInsertAtIndex},
+    {"erase at index shifts elements left", testEraseAtIndex},
+    {"insert range from another vector", testInsertRangeFromVector},
+    {"erase range removes correct elements", testEraseRange},
+    {"pushFront and popFront work correctly", testPushFrontPopFront},
   };
 
   const size_t count = sizeof(tests) / sizeof(pair_t);
