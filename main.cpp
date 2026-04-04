@@ -322,6 +322,34 @@ bool testPushFrontPopFront()
   ok = ok && v.getSize() == 1 && v[0] == 2;
   return ok;
 }
+bool testIteratorInsertSingle()
+{
+  topit::Vector< int > v{1, 3};
+  auto ret = v.insert(v.begin() + 1, 2);
+  return v.getSize() == 3 && v[0] == 1 && v[1] == 2 && v[2] == 3 && *ret == 2;
+}
+
+bool testIteratorInsertMultiple()
+{
+  topit::Vector< int > v{1, 5};
+  auto ret = v.insert(v.begin() + 1, size_t(3), 0);
+  return v.getSize() == 5 && v[0] == 1 && v[1] == 0 && v[4] == 5 && *ret == 0;
+}
+
+bool testIteratorErase()
+{
+  topit::Vector< int > v{1, 2, 3};
+  auto ret = v.erase(v.begin() + 1);
+  return v.getSize() == 2 && v[0] == 1 && v[1] == 3 && *ret == 3;
+}
+
+bool testFwdIteratorInsert()
+{
+  int arr[] = {10, 20, 30};
+  topit::Vector< int > v{1, 2, 3};
+  v.insert(v.begin() + 1, arr, arr + 3);
+  return v.getSize() == 6 && v[0] == 1 && v[1] == 10 && v[2] == 20 && v[3] == 30 && v[4] == 2 && v[5] == 3;
+}
 
 int main()
 {
@@ -363,6 +391,10 @@ int main()
     {"insert range from another vector", testInsertRangeFromVector},
     {"erase range removes correct elements", testEraseRange},
     {"pushFront and popFront work correctly", testPushFrontPopFront},
+    {"Iterator insert single returns iterator to inserted", testIteratorInsertSingle},
+    {"Iterator insert multiple returns iterator to first", testIteratorInsertMultiple},
+    {"Iterator erase returns iterator to next element", testIteratorErase},
+    {"Forward iterator insert inserts range at position", testFwdIteratorInsert},
   };
 
   const size_t count = sizeof(tests) / sizeof(pair_t);
